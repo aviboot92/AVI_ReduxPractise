@@ -18,7 +18,7 @@ const demoState = {
         endDate: undefined 
     }
 } 
-// ======== Action Generators===============
+// ========Expenses Action Generators===============
 // ADD_EXPENSE
 const addExpense = ({
     description = "",
@@ -72,25 +72,101 @@ const expensesReducer = (state = expensesDefaultState, action) => {
             });
         }
         case 'EDIT_EXPENSE':{
-            console.log("I am in EDIT_EXPENSE");
-            console.log(action);
-            state.map((expense) =>{
+            return state.map((expense)=> {
                 if(expense.id === action.id){
-                    console.log(action.edits);
-                   return {
-                       ...expense,
-                       ...action.edits
-                   }
+                    return{
+                        ...expense,
+                        ...action.edits
+                    }
+                } else {
+                    return expense
                 }
             });
-        }
+        };
         default: return state;
-    }
+    };
 };
+
+// ==============Filters Action Generators============
+// Set Text Filter
+const setTextFilter = (par) =>({
+    type:"SET_TEXT_FILTER",
+    par
+});
+// Sort by Amount
+const sortByAmount = () =>({
+    type:"SORT_BY_AMOUNT"
+});
+// Sort By Date
+const sortByDate = () =>({
+    type:"SORT_BY_DATE"
+});
+// Set Start Date
+const setStartDate = (par) =>({
+    type:"SET_START_DATE",
+    par
+});
+// Set End Date
+const setEndDate = (par) => ({
+    type:"SET_END_DATE",
+    par
+})
+
 
 // Filters Reducer
 const filtersReducer = (state = filtersDefaultState, action) => {
     switch (action.type){
+        case 'SET_TEXT_FILTER':{
+            if(action.par === undefined){
+                const emptyStr = "";
+                return{
+                    ...state,
+                    text: emptyStr
+                };
+            } else {
+                return{
+                    ...state,
+                    text: action.par
+                }
+            };
+        };
+        case "SORT_BY_AMOUNT":
+            return {
+                ...state,
+                sortBy: "amount"
+
+            }
+        case "SORT_BY_DATE":
+            return {
+                ...state,
+                sortBy: "date"
+        };
+        case "SET_START_DATE":{
+            if(action.par === undefined){
+                return{
+                    ...state,
+                    startDate: undefined
+                };
+            } else {
+                return{
+                    ...state,
+                    startDate: action.par
+                }
+            };
+        };
+        case "SET_END_DATE": {
+            if(action.par === undefined){
+                return{
+                    ...state,
+                    endDate: undefined
+                };
+            } else{
+                return{
+                    ...state,
+                    endDate: action.par
+                };
+            };
+        };
         default: return state;
     }
 }
@@ -110,8 +186,19 @@ const expenseThree = store.dispatch(addExpense({description:"weed", note: "Smoke
 const expenseFour = store.dispatch(addExpense({description:"flat", note: "Keep it clean", amount:400}));
 
 store.dispatch(removeExpense({id:expenseOne.expense.id}));
+
 store.dispatch(editExpense(expenseThree.expense.id, {note:"It is expensive in this country"}));
 
+store.dispatch(setTextFilter("weed"));
+store.dispatch(setTextFilter());
+
+store.dispatch(sortByAmount());
+store.dispatch(sortByDate());
+
+store.dispatch(setStartDate(125));
+store.dispatch(setStartDate());
+store.dispatch(setEndDate(1250));
+store.dispatch(setEndDate());
 
 
 

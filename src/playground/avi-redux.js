@@ -177,8 +177,18 @@ const store = createStore(combineReducers({
     filters: filtersReducer
 })); 
 
+// getVisibleExpenses
+const getVisibleExpenses = (expenses, filters) => {
+    return expenses;
+};
+
 // Store SUBSCRIBE
-store.subscribe(() => {console.log(store.getState())});
+store.subscribe(() => {
+    const state = store.getState();
+    const filteredExpenses = getVisibleExpenses(state.expenses, state.filters);
+    console.log(filteredExpenses);
+    console.log(store.getState());
+});
 
 const expenseOne = store.dispatch(addExpense({description: 'club', note:'high life', amount:2000}));
 const expenseTwo = store.dispatch(addExpense({description:"condoms", note: "Don't fuck too much", amount:500}));
